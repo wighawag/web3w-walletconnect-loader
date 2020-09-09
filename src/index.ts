@@ -160,8 +160,7 @@ class WalletConnectModule implements Web3WModule {
 }
 
 export class WalletConnectModuleLoader implements Web3WModuleLoader {
-  public readonly id: string = 'portis';
-  private dappId: string;
+  public readonly id: string = 'walletconnect';
 
   private static _jsURL = 'https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.0.13/dist/umd/index.min.js';
   private static _jsURLIntegrity: string | undefined;
@@ -178,7 +177,6 @@ export class WalletConnectModuleLoader implements Web3WModuleLoader {
   }
 
   constructor(
-    dappId: string,
     config?: {
       forceFallbackUrl?: boolean;
       fallbackUrl?: string;
@@ -186,7 +184,6 @@ export class WalletConnectModuleLoader implements Web3WModuleLoader {
       config?: WalletConnectConfig;
     }
   ) {
-    this.dappId = dappId;
     this.moduleConfig = config;
   }
 

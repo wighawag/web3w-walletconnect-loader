@@ -126,9 +126,8 @@ class WalletConnectModule {
     }
 }
 class WalletConnectModuleLoader {
-    constructor(dappId, config) {
-        this.id = 'portis';
-        this.dappId = dappId;
+    constructor(config) {
+        this.id = 'walletconnect';
         this.moduleConfig = config;
     }
     static setJsURL(jsURL, jsURLIntegrity) {

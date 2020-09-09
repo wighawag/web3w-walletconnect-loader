@@ -3,13 +3,12 @@ declare module "index" {
     type WalletConnectConfig = any;
     export class WalletConnectModuleLoader implements Web3WModuleLoader {
         readonly id: string;
-        private dappId;
         private static _jsURL;
         private static _jsURLIntegrity;
         private static _jsURLUsed;
         private moduleConfig;
         static setJsURL(jsURL: string, jsURLIntegrity?: string): void;
-        constructor(dappId: string, config?: {
+        constructor(config?: {
             forceFallbackUrl?: boolean;
             fallbackUrl?: string;
             chainId?: string;
