@@ -1,6 +1,6 @@
 import type {Web3WModule, WindowWeb3Provider, Web3WModuleLoader} from 'web3w';
 import {logs} from 'named-logs';
-const console = logs('web3w-portis:index');
+const console = logs('web3w-walletconnect:index');
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type WalletConnectConfig = any;
@@ -125,7 +125,7 @@ class WalletConnectModule implements Web3WModule {
     } else {
       walletConnectConfig = {
         rpc: {
-          [chainId]: fallbackUrl,
+          [chainIdAsNumber]: fallbackUrl,
         },
       };
     }
@@ -176,14 +176,12 @@ export class WalletConnectModuleLoader implements Web3WModuleLoader {
     WalletConnectModuleLoader._jsURLIntegrity = jsURLIntegrity;
   }
 
-  constructor(
-    config?: {
-      forceFallbackUrl?: boolean;
-      fallbackUrl?: string;
-      chainId?: string;
-      config?: WalletConnectConfig;
-    }
-  ) {
+  constructor(config?: {
+    forceFallbackUrl?: boolean;
+    fallbackUrl?: string;
+    chainId?: string;
+    config?: WalletConnectConfig;
+  }) {
     this.moduleConfig = config;
   }
 
