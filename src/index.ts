@@ -69,6 +69,7 @@ class WalletConnectModule implements Web3WModule {
     fallbackUrl = fallbackUrl || this.fallbackUrl;
 
     if (fallbackUrl && !chainId) {
+      console.log(`no chanId provided but fallbackUrl, fetching chainId...`);
       const response = await fetch(fallbackUrl, {
         headers: {
           'content-type': 'application/json; charset=UTF-8',
@@ -83,6 +84,7 @@ class WalletConnectModule implements Web3WModule {
       });
       const json = await response.json();
       chainId = parseInt(json.result.slice(2), 16).toString();
+      console.log({chainId});
     }
 
     if (!chainId) {
@@ -94,10 +96,12 @@ class WalletConnectModule implements Web3WModule {
 
     let walletConnectConfig;
     if (this.infuraId && knownNetwork) {
+      console.log(`known network, using infuraId: ${this.infuraId}`)
       walletConnectConfig = {
         infuraId: this.infuraId,
       };
     } else {
+      console.log(`unknown network, using fallbackUrl: ${fallbackUrl}`);
       walletConnectConfig = {
         rpc: {
           [chainIdAsNumber]: fallbackUrl,
@@ -161,13 +165,17 @@ export class WalletConnectModuleLoader implements Web3WModuleLoader {
       const integrity = WalletConnectModuleLoader._jsURLIntegrity;
       WalletConnectModuleLoader._jsURLUsed = true;
       try {
+        console.log(`loading ${url}...`);
         await loadJS(url, integrity, 'anonymous');
       } catch (e) {
+        console.error(`error loading`, e);
         WalletConnectModuleLoader._jsURLUsed = false;
         throw e;
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       WalletConnectProvider = (window as any).WalletConnectProvider.default;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      console.log(`WalletConnectProvider Module`, (window as any).WalletConnectProvider);
     }
     return new WalletConnectModule(this.moduleConfig);
   }
