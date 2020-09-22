@@ -137,7 +137,7 @@ class WalletConnectModule implements Web3WModule {
 export class WalletConnectModuleLoader implements Web3WModuleLoader {
   public readonly id: string = 'walletconnect';
 
-  private static _jsURL = 'https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.0.13/dist/umd/index.min.js';
+  private static _jsURL = 'https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.2.2/dist/umd/index.min.js';
   private static _jsURLIntegrity: string | undefined;
   private static _jsURLUsed = false;
 

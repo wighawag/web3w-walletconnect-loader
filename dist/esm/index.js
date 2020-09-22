@@ -142,6 +142,6 @@ export class WalletConnectModuleLoader {
         });
     }
 }
-WalletConnectModuleLoader._jsURL = 'https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.0.13/dist/umd/index.min.js';
+WalletConnectModuleLoader._jsURL = 'https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.2.2/dist/umd/index.min.js';
 WalletConnectModuleLoader._jsURLUsed = false;
 //# sourceMappingURL=index.js.map
