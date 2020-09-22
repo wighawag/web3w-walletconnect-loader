@@ -55,6 +55,7 @@ class WalletConnectModule {
             chainId = chainId || this.chainId;
             fallbackUrl = fallbackUrl || this.fallbackUrl;
             if (fallbackUrl && !chainId) {
+                console.log(`no chanId provided but fallbackUrl, fetching chainId...`);
                 const response = yield fetch(fallbackUrl, {
                     headers: {
                         'content-type': 'application/json; charset=UTF-8',
@@ -69,6 +70,7 @@ class WalletConnectModule {
                 });
                 const json = yield response.json();
                 chainId = parseInt(json.result.slice(2), 16).toString();
+                console.log({ chainId });
             }
             if (!chainId) {
                 throw new Error(`chainId missing`);
@@ -77,11 +79,13 @@ class WalletConnectModule {
             const knownNetwork = knownChainIds[chainId];
             let walletConnectConfig;
             if (this.infuraId && knownNetwork) {
+                console.log(`known network, using infuraId: ${this.infuraId}`);
                 walletConnectConfig = {
                     infuraId: this.infuraId,
                 };
             }
             else {
+                console.log(`unknown network, using fallbackUrl: ${fallbackUrl}`);
                 walletConnectConfig = {
                     rpc: {
                         [chainIdAsNumber]: fallbackUrl,
@@ -132,14 +136,18 @@ class WalletConnectModuleLoader {
                 const integrity = WalletConnectModuleLoader._jsURLIntegrity;
                 WalletConnectModuleLoader._jsURLUsed = true;
                 try {
+                    console.log(`loading ${url}...`);
                     yield loadJS(url, integrity, 'anonymous');
                 }
                 catch (e) {
+                    console.error(`error loading`, e);
                     WalletConnectModuleLoader._jsURLUsed = false;
                     throw e;
                 }
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 WalletConnectProvider = window.WalletConnectProvider.default;
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                console.log(`WalletConnectProvider Module`, window.WalletConnectProvider);
             }
             return new WalletConnectModule(this.moduleConfig);
         });
