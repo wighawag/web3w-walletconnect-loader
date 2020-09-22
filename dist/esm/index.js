@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { logs } from 'named-logs';
-const console = logs('web3w-portis:index');
+const console = logs('web3w-walletconnect:index');
 let WalletConnectProvider;
 function loadJS(url, integrity, crossorigin) {
     return new Promise(function (resolve, reject) {
@@ -42,10 +42,8 @@ class WalletConnectModule {
     constructor(config) {
         this.id = 'walletconnect';
         this.infuraId = config && config.infuraId;
-        this.forceFallbackUrl = config && config.forceFallbackUrl;
         this.fallbackUrl = config && config.fallbackUrl;
         this.chainId = config && config.chainId;
-        this.config = config; // TODO use ?
     }
     setup(config) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -74,16 +72,6 @@ class WalletConnectModule {
             }
             const chainIdAsNumber = parseInt(chainId);
             const knownNetwork = knownChainIds[chainId];
-            let network;
-            if (knownNetwork && !this.forceFallbackUrl) {
-                network = Object.assign(Object.assign({}, knownNetwork), { chainId: chainIdAsNumber });
-            }
-            else {
-                network = {
-                    host: fallbackUrl,
-                    chainId: chainIdAsNumber,
-                };
-            }
             let walletConnectConfig;
             if (this.infuraId && knownNetwork) {
                 walletConnectConfig = {
@@ -93,7 +81,7 @@ class WalletConnectModule {
             else {
                 walletConnectConfig = {
                     rpc: {
-                        [chainId]: fallbackUrl,
+                        [chainIdAsNumber]: fallbackUrl,
                     },
                 };
             }

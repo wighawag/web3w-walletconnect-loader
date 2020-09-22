@@ -1,6 +1,10 @@
 declare module "index" {
     import type { Web3WModule, Web3WModuleLoader } from 'web3w';
-    type WalletConnectConfig = any;
+    type Config = {
+        chainId?: string;
+        fallbackUrl?: string;
+        infuraId?: string;
+    };
     export class WalletConnectModuleLoader implements Web3WModuleLoader {
         readonly id: string;
         private static _jsURL;
@@ -8,12 +12,7 @@ declare module "index" {
         private static _jsURLUsed;
         private moduleConfig;
         static setJsURL(jsURL: string, jsURLIntegrity?: string): void;
-        constructor(config?: {
-            forceFallbackUrl?: boolean;
-            fallbackUrl?: string;
-            chainId?: string;
-            config?: WalletConnectConfig;
-        });
+        constructor(config?: Config);
         load(): Promise<Web3WModule>;
     }
 }

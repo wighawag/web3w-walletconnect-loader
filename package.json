@@ -1,6 +1,6 @@
 {
   "name": "web3w-walletconnect-loader",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Wallet Connect module loader for web3w",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",

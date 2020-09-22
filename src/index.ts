@@ -3,20 +3,12 @@ import {logs} from 'named-logs';
 const console = logs('web3w-walletconnect:index');
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type WalletConnectConfig = any;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type WalletConnectProviderJS = any;
 
 type Config = {
   chainId?: string;
   fallbackUrl?: string;
   infuraId?: string;
-};
-
-type GeneralConfig = Config & {
-  forceFallbackUrl?: boolean;
-  config?: WalletConnectConfig;
 };
 
 let WalletConnectProvider: WalletConnectProviderJS;
@@ -58,20 +50,16 @@ const knownChainIds: {[chainId: string]: {host: string; networkName: string}} = 
 class WalletConnectModule implements Web3WModule {
   public readonly id = 'walletconnect';
 
-  private forceFallbackUrl: boolean | undefined;
   private fallbackUrl: string | undefined;
   private chainId: string | undefined;
   private infuraId: string | undefined;
-  private config: WalletConnectConfig | undefined;
 
   private walletConnectProvider: WalletConnectProviderJS;
 
-  constructor(config?: GeneralConfig) {
+  constructor(config?: Config) {
     this.infuraId = config && config.infuraId;
-    this.forceFallbackUrl = config && config.forceFallbackUrl;
     this.fallbackUrl = config && config.fallbackUrl;
     this.chainId = config && config.chainId;
-    this.config = config; // TODO use ?
   }
 
   async setup(config?: Config): Promise<{chainId: string; web3Provider: WindowWeb3Provider}> {
@@ -103,19 +91,6 @@ class WalletConnectModule implements Web3WModule {
     const chainIdAsNumber = parseInt(chainId);
 
     const knownNetwork = knownChainIds[chainId];
-
-    let network: {host?: string; networkName?: string; chainId: number} | undefined;
-    if (knownNetwork && !this.forceFallbackUrl) {
-      network = {
-        ...knownNetwork,
-        chainId: chainIdAsNumber,
-      };
-    } else {
-      network = {
-        host: fallbackUrl,
-        chainId: chainIdAsNumber,
-      };
-    }
 
     let walletConnectConfig;
     if (this.infuraId && knownNetwork) {
@@ -166,7 +141,7 @@ export class WalletConnectModuleLoader implements Web3WModuleLoader {
   private static _jsURLIntegrity: string | undefined;
   private static _jsURLUsed = false;
 
-  private moduleConfig: GeneralConfig | undefined;
+  private moduleConfig: Config | undefined;
 
   static setJsURL(jsURL: string, jsURLIntegrity?: string): void {
     if (WalletConnectModuleLoader._jsURLUsed) {
@@ -176,12 +151,7 @@ export class WalletConnectModuleLoader implements Web3WModuleLoader {
     WalletConnectModuleLoader._jsURLIntegrity = jsURLIntegrity;
   }
 
-  constructor(config?: {
-    forceFallbackUrl?: boolean;
-    fallbackUrl?: string;
-    chainId?: string;
-    config?: WalletConnectConfig;
-  }) {
+  constructor(config?: Config) {
     this.moduleConfig = config;
   }
 
