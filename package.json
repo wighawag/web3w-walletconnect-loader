@@ -1,6 +1,6 @@
 {
   "name": "web3w-walletconnect-loader",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Wallet Connect module loader for web3w",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -50,6 +50,6 @@
     "lint": "eslint src/**/*.{js,ts,tsx} --quiet --fix"
   },
   "dependencies": {
-    "named-logs": "^0.0.7"
+    "named-logs": "0.0.13"
   }
 }

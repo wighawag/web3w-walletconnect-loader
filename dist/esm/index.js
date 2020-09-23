@@ -90,6 +90,7 @@ class WalletConnectModule {
                 };
             }
             this.walletConnectProvider = new WalletConnectProvider(walletConnectConfig);
+            yield this.walletConnectProvider.enable();
             // TODO remove
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             window.walletConnectProvider = this.walletConnectProvider;
@@ -100,10 +101,12 @@ class WalletConnectModule {
         });
     }
     logout() {
-        return this.walletConnectProvider.close();
+        // return this.walletConnectProvider.close();
+        return Promise.resolve();
     }
     disconnect() {
-        // this.walletConnectProvider.close(); // TODO here (instead of logout)
+        this.walletConnectProvider.close(); // TODO here (instead of logout) ?
+        this.walletConnectProvider = undefined;
         // TODO remove
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         window.walletConnectProvider = undefined;

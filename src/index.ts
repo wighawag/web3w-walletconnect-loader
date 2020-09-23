@@ -96,7 +96,7 @@ class WalletConnectModule implements Web3WModule {
 
     let walletConnectConfig;
     if (this.infuraId && knownNetwork) {
-      console.log(`known network, using infuraId: ${this.infuraId}`)
+      console.log(`known network, using infuraId: ${this.infuraId}`);
       walletConnectConfig = {
         infuraId: this.infuraId,
       };
@@ -110,6 +110,7 @@ class WalletConnectModule implements Web3WModule {
     }
 
     this.walletConnectProvider = new WalletConnectProvider(walletConnectConfig);
+    await this.walletConnectProvider.enable();
 
     // TODO remove
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -122,11 +123,13 @@ class WalletConnectModule implements Web3WModule {
   }
 
   logout(): Promise<void> {
-    return this.walletConnectProvider.close();
+    // return this.walletConnectProvider.close();
+    return Promise.resolve();
   }
 
   disconnect(): void {
-    // this.walletConnectProvider.close(); // TODO here (instead of logout)
+    this.walletConnectProvider.close(); // TODO here (instead of logout) ?
+    this.walletConnectProvider = undefined;
 
     // TODO remove
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
