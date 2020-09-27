@@ -7,7 +7,7 @@ type WalletConnectProviderJS = any;
 
 type Config = {
   chainId?: string;
-  fallbackUrl?: string;
+  nodeUrl?: string;
   infuraId?: string;
 };
 
@@ -50,7 +50,7 @@ const knownChainIds: {[chainId: string]: {host: string; networkName: string}} = 
 class WalletConnectModule implements Web3WModule {
   public readonly id = 'walletconnect';
 
-  private fallbackUrl: string | undefined;
+  private nodeUrl: string | undefined;
   private chainId: string | undefined;
   private infuraId: string | undefined;
 
@@ -58,19 +58,19 @@ class WalletConnectModule implements Web3WModule {
 
   constructor(config?: Config) {
     this.infuraId = config && config.infuraId;
-    this.fallbackUrl = config && config.fallbackUrl;
+    this.nodeUrl = config && config.nodeUrl;
     this.chainId = config && config.chainId;
   }
 
   async setup(config?: Config): Promise<{chainId: string; web3Provider: WindowWeb3Provider}> {
     config = config || {};
-    let {chainId, fallbackUrl} = config;
+    let {chainId, nodeUrl} = config;
     chainId = chainId || this.chainId;
-    fallbackUrl = fallbackUrl || this.fallbackUrl;
+    nodeUrl = nodeUrl || this.nodeUrl;
 
-    if (fallbackUrl && !chainId) {
-      console.log(`no chanId provided but fallbackUrl, fetching chainId...`);
-      const response = await fetch(fallbackUrl, {
+    if (nodeUrl && !chainId) {
+      console.log(`no chanId provided but nodeUrl, fetching chainId...`);
+      const response = await fetch(nodeUrl, {
         headers: {
           'content-type': 'application/json; charset=UTF-8',
         },
@@ -101,10 +101,10 @@ class WalletConnectModule implements Web3WModule {
         infuraId: this.infuraId,
       };
     } else {
-      console.log(`unknown network, using fallbackUrl: ${fallbackUrl}`);
+      console.log(`unknown network, using nodeUrl: ${nodeUrl}`);
       walletConnectConfig = {
         rpc: {
-          [chainIdAsNumber]: fallbackUrl,
+          [chainIdAsNumber]: nodeUrl,
         },
       };
     }

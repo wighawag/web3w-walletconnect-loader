@@ -42,18 +42,18 @@ class WalletConnectModule {
     constructor(config) {
         this.id = 'walletconnect';
         this.infuraId = config && config.infuraId;
-        this.fallbackUrl = config && config.fallbackUrl;
+        this.nodeUrl = config && config.nodeUrl;
         this.chainId = config && config.chainId;
     }
     setup(config) {
         return __awaiter(this, void 0, void 0, function* () {
             config = config || {};
-            let { chainId, fallbackUrl } = config;
+            let { chainId, nodeUrl } = config;
             chainId = chainId || this.chainId;
-            fallbackUrl = fallbackUrl || this.fallbackUrl;
-            if (fallbackUrl && !chainId) {
-                console.log(`no chanId provided but fallbackUrl, fetching chainId...`);
-                const response = yield fetch(fallbackUrl, {
+            nodeUrl = nodeUrl || this.nodeUrl;
+            if (nodeUrl && !chainId) {
+                console.log(`no chanId provided but nodeUrl, fetching chainId...`);
+                const response = yield fetch(nodeUrl, {
                     headers: {
                         'content-type': 'application/json; charset=UTF-8',
                     },
@@ -82,10 +82,10 @@ class WalletConnectModule {
                 };
             }
             else {
-                console.log(`unknown network, using fallbackUrl: ${fallbackUrl}`);
+                console.log(`unknown network, using nodeUrl: ${nodeUrl}`);
                 walletConnectConfig = {
                     rpc: {
-                        [chainIdAsNumber]: fallbackUrl,
+                        [chainIdAsNumber]: nodeUrl,
                     },
                 };
             }
