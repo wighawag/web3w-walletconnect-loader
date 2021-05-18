@@ -37,6 +37,11 @@ const knownChainIds = {
     '4': { host: 'rinkeby', networkName: 'Rinkeby Test Network' },
     '5': { host: 'goerli', networkName: 'Goerli Test Network' },
     '42': { host: 'kovan', networkName: 'Kovan Test Network' },
+    // "1337": {host: "localhost", networkName: "Ganache Test Network"},
+    // "31337": {host: "localhost", networkName: "BuidlerEVM Test Network"},
+    // '77': {host: 'sokol',
+    // '99': {host: 'core',
+    // '100': {host: 'xdai',
 };
 class WalletConnectModule {
     constructor(config) {

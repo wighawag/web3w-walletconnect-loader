@@ -1,7 +1,7 @@
 import type { Web3WModule, Web3WModuleLoader } from 'web3w';
 declare type Config = {
     chainId?: string;
-    fallbackUrl?: string;
+    nodeUrl?: string;
     infuraId?: string;
 };
 export declare class WalletConnectModuleLoader implements Web3WModuleLoader {

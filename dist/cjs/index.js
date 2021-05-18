@@ -40,23 +40,28 @@ const knownChainIds = {
     '4': { host: 'rinkeby', networkName: 'Rinkeby Test Network' },
     '5': { host: 'goerli', networkName: 'Goerli Test Network' },
     '42': { host: 'kovan', networkName: 'Kovan Test Network' },
+    // "1337": {host: "localhost", networkName: "Ganache Test Network"},
+    // "31337": {host: "localhost", networkName: "BuidlerEVM Test Network"},
+    // '77': {host: 'sokol',
+    // '99': {host: 'core',
+    // '100': {host: 'xdai',
 };
 class WalletConnectModule {
     constructor(config) {
         this.id = 'walletconnect';
         this.infuraId = config && config.infuraId;
-        this.fallbackUrl = config && config.fallbackUrl;
+        this.nodeUrl = config && config.nodeUrl;
         this.chainId = config && config.chainId;
     }
     setup(config) {
         return __awaiter(this, void 0, void 0, function* () {
             config = config || {};
-            let { chainId, fallbackUrl } = config;
+            let { chainId, nodeUrl } = config;
             chainId = chainId || this.chainId;
-            fallbackUrl = fallbackUrl || this.fallbackUrl;
-            if (fallbackUrl && !chainId) {
-                console.log(`no chanId provided but fallbackUrl, fetching chainId...`);
-                const response = yield fetch(fallbackUrl, {
+            nodeUrl = nodeUrl || this.nodeUrl;
+            if (nodeUrl && !chainId) {
+                console.log(`no chanId provided but nodeUrl, fetching chainId...`);
+                const response = yield fetch(nodeUrl, {
                     headers: {
                         'content-type': 'application/json; charset=UTF-8',
                     },
@@ -85,10 +90,10 @@ class WalletConnectModule {
                 };
             }
             else {
-                console.log(`unknown network, using fallbackUrl: ${fallbackUrl}`);
+                console.log(`unknown network, using nodeUrl: ${nodeUrl}`);
                 walletConnectConfig = {
                     rpc: {
-                        [chainIdAsNumber]: fallbackUrl,
+                        [chainIdAsNumber]: nodeUrl,
                     },
                 };
             }
@@ -159,3 +164,4 @@ class WalletConnectModuleLoader {
 exports.WalletConnectModuleLoader = WalletConnectModuleLoader;
 WalletConnectModuleLoader._jsURL = 'https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.2.2/dist/umd/index.min.js';
 WalletConnectModuleLoader._jsURLUsed = false;
+//# sourceMappingURL=index.js.map
