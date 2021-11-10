@@ -88,6 +88,9 @@ class WalletConnectModule {
             }
             else {
                 console.log(`unknown network, using nodeUrl: ${nodeUrl}`);
+                if (!nodeUrl) {
+                    throw new Error(`no infuraId or unknown network and nodeURL missing`);
+                }
                 walletConnectConfig = {
                     rpc: {
                         [chainIdAsNumber]: nodeUrl,
@@ -158,6 +161,6 @@ export class WalletConnectModuleLoader {
         });
     }
 }
-WalletConnectModuleLoader._jsURL = 'https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.2.2/dist/umd/index.min.js';
+WalletConnectModuleLoader._jsURL = 'https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.6.6/dist/umd/index.min.js';
 WalletConnectModuleLoader._jsURLUsed = false;
 //# sourceMappingURL=index.js.map

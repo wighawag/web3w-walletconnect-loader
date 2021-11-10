@@ -11,6 +11,16 @@ type Config = {
   infuraId?: string;
 };
 
+type WalletConnectConfig =
+  | {
+      infuraId: string;
+    }
+  | {
+      rpc: {
+        [chainId: string]: string;
+      };
+    };
+
 let WalletConnectProvider: WalletConnectProviderJS;
 
 function loadJS(url: string, integrity: string | undefined, crossorigin: string) {
@@ -94,7 +104,7 @@ class WalletConnectModule implements Web3WModule {
 
     const knownNetwork = knownChainIds[chainId];
 
-    let walletConnectConfig;
+    let walletConnectConfig: WalletConnectConfig;
     if (this.infuraId && knownNetwork) {
       console.log(`known network, using infuraId: ${this.infuraId}`);
       walletConnectConfig = {
@@ -102,6 +112,9 @@ class WalletConnectModule implements Web3WModule {
       };
     } else {
       console.log(`unknown network, using nodeUrl: ${nodeUrl}`);
+      if (!nodeUrl) {
+        throw new Error(`no infuraId or unknown network and nodeURL missing`);
+      }
       walletConnectConfig = {
         rpc: {
           [chainIdAsNumber]: nodeUrl,
@@ -144,7 +157,7 @@ class WalletConnectModule implements Web3WModule {
 export class WalletConnectModuleLoader implements Web3WModuleLoader {
   public readonly id: string = 'walletconnect';
 
-  private static _jsURL = 'https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.2.2/dist/umd/index.min.js';
+  private static _jsURL = 'https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.6.6/dist/umd/index.min.js';
   private static _jsURLIntegrity: string | undefined;
   private static _jsURLUsed = false;
 
