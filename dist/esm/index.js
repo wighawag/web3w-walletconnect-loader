@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { logs } from 'named-logs';
 const console = logs('web3w-walletconnect:index');
-let WalletConnectProvider;
+let WalletConnectProvider; // EthereumProvider class
 function loadJS(url, integrity, crossorigin) {
     return new Promise(function (resolve, reject) {
         const script = document.createElement('script');
@@ -31,77 +31,30 @@ function loadJS(url, integrity, crossorigin) {
         document.head.appendChild(script);
     });
 }
-const knownChainIds = {
-    '1': { host: 'mainnet', networkName: 'Main Ethereum Network' },
-    '3': { host: 'ropsten', networkName: 'Ropsten Test Network' },
-    '4': { host: 'rinkeby', networkName: 'Rinkeby Test Network' },
-    '5': { host: 'goerli', networkName: 'Goerli Test Network' },
-    '42': { host: 'kovan', networkName: 'Kovan Test Network' },
-    // "1337": {host: "localhost", networkName: "Ganache Test Network"},
-    // "31337": {host: "localhost", networkName: "BuidlerEVM Test Network"},
-    // '77': {host: 'sokol',
-    // '99': {host: 'core',
-    // '100': {host: 'xdai',
-};
 class WalletConnectModule {
     constructor(config) {
         this.id = 'walletconnect';
-        this.infuraId = config && config.infuraId;
-        this.nodeUrl = config && config.nodeUrl;
-        this.chainId = config && config.chainId;
+        this.config = config;
     }
     setup(config) {
         return __awaiter(this, void 0, void 0, function* () {
-            config = config || {};
-            let { chainId, nodeUrl } = config;
-            chainId = chainId || this.chainId;
-            nodeUrl = nodeUrl || this.nodeUrl;
-            if (nodeUrl && !chainId) {
-                console.log(`no chanId provided but nodeUrl, fetching chainId...`);
-                const response = yield fetch(nodeUrl, {
-                    headers: {
-                        'content-type': 'application/json; charset=UTF-8',
-                    },
-                    body: JSON.stringify({
-                        id: Math.floor(Math.random() * 1000000),
-                        jsonrpc: '2.0',
-                        method: 'eth_chainId',
-                        params: [],
-                    }),
-                    method: 'POST',
-                });
-                const json = yield response.json();
-                chainId = parseInt(json.result.slice(2), 16).toString();
-                console.log({ chainId });
+            const configToUse = config ? Object.assign(Object.assign({}, this.config), config) : this.config;
+            if (!configToUse.chains || configToUse.chains.length === 0) {
+                throw new Error(`chains missing`);
             }
-            if (!chainId) {
-                throw new Error(`chainId missing`);
+            if (!configToUse.projectId) {
+                throw new Error(`projectId missing`);
             }
-            const chainIdAsNumber = parseInt(chainId);
-            const knownNetwork = knownChainIds[chainId];
-            let walletConnectConfig;
-            if (this.infuraId && knownNetwork) {
-                console.log(`known network, using infuraId: ${this.infuraId}`);
-                walletConnectConfig = {
-                    infuraId: this.infuraId,
-                };
+            const walletConnectConfig = {
+                projectId: configToUse.projectId,
+                chains: configToUse.chains,
+            };
+            this.walletConnectProvider = yield WalletConnectProvider.init(walletConnectConfig);
+            const response = yield this.walletConnectProvider.request({ method: 'eth_chainId' });
+            let chainId = configToUse.chains[0].toString();
+            if (configToUse.chains.length > 1) {
+                chainId = parseInt(response.slice(2), 16).toString();
             }
-            else {
-                console.log(`unknown network, using nodeUrl: ${nodeUrl}`);
-                if (!nodeUrl) {
-                    throw new Error(`no infuraId or unknown network and nodeURL missing`);
-                }
-                walletConnectConfig = {
-                    rpc: {
-                        [chainIdAsNumber]: nodeUrl,
-                    },
-                };
-            }
-            this.walletConnectProvider = new WalletConnectProvider(walletConnectConfig);
-            yield this.walletConnectProvider.enable();
-            // TODO remove
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            window.walletConnectProvider = this.walletConnectProvider;
             return {
                 web3Provider: this.walletConnectProvider,
                 chainId,
@@ -153,14 +106,12 @@ export class WalletConnectModuleLoader {
                     throw e;
                 }
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                WalletConnectProvider = window.WalletConnectProvider.default;
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                console.log(`WalletConnectProvider Module`, window.WalletConnectProvider);
+                WalletConnectProvider = window['@walletconnect/ethereum-provider'].EthereumProvider;
             }
             return new WalletConnectModule(this.moduleConfig);
         });
     }
 }
-WalletConnectModuleLoader._jsURL = 'https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.6.6/dist/umd/index.min.js';
+WalletConnectModuleLoader._jsURL = 'https://unpkg.com/@walletconnect/ethereum-provider@2.4.6/dist/index.umd.js';
 WalletConnectModuleLoader._jsURLUsed = false;
 //# sourceMappingURL=index.js.map
