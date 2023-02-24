@@ -52,6 +52,11 @@ class WalletConnectModule implements Web3WModule {
     };
 
     this.walletConnectProvider = await WalletConnectProvider.init(walletConnectConfig);
+
+    // TODO remove
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).walletConnectProvider = this.walletConnectProvider;
+
     await this.walletConnectProvider.enable();
 
     const response = await this.walletConnectProvider.request<string>({method: 'eth_chainId'});

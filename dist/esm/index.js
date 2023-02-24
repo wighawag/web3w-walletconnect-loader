@@ -50,6 +50,9 @@ class WalletConnectModule {
                 chains: configToUse.chains,
             };
             this.walletConnectProvider = yield WalletConnectProvider.init(walletConnectConfig);
+            // TODO remove
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            window.walletConnectProvider = this.walletConnectProvider;
             yield this.walletConnectProvider.enable();
             const response = yield this.walletConnectProvider.request({ method: 'eth_chainId' });
             let chainId = configToUse.chains[0].toString();
