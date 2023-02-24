@@ -2,32 +2,7 @@ import type {Web3WModule, WindowWeb3Provider, Web3WModuleLoader} from 'web3w';
 import {logs} from 'named-logs';
 const console = logs('web3w-walletconnect:index');
 
-interface EthereumRpcMap {
-  [chainId: string]: string;
-}
-
-interface Metadata {
-  name: string;
-  description: string;
-  url: string;
-  icons: string[];
-}
-
-interface EthereumProviderOptions {
-  projectId: string;
-  chains: number[];
-  optionalChains?: number[];
-  methods?: string[];
-  optionalMethods?: string[];
-  events?: string[];
-  optionalEvents?: string[];
-  rpcMap?: EthereumRpcMap;
-  metadata?: Metadata;
-  showQrModal?: boolean;
-}
-
-type EthereumProvider = any; // EthereumProvider instance's type
-let WalletConnectProvider: {init: (options: EthereumProviderOptions) => Promise<EthereumProvider>}; // EthereumProvider class
+let WalletConnectProvider: {init: (options: EthereumProviderOptions) => Promise<InstanceType<typeof EthereumProvider>>}; // EthereumProvider class
 
 function loadJS(url: string, integrity: string | undefined, crossorigin: string) {
   return new Promise<void>(function (resolve, reject) {
@@ -55,7 +30,7 @@ class WalletConnectModule implements Web3WModule {
   public readonly id = 'walletconnect';
 
   private config: EthereumProviderOptions;
-  private walletConnectProvider: EthereumProvider;
+  private walletConnectProvider: InstanceType<typeof EthereumProvider> | undefined;
 
   constructor(config: EthereumProviderOptions) {
     this.config = config;
@@ -79,7 +54,7 @@ class WalletConnectModule implements Web3WModule {
     this.walletConnectProvider = await WalletConnectProvider.init(walletConnectConfig);
     await this.walletConnectProvider.enable();
 
-    const response = await this.walletConnectProvider.request({method: 'eth_chainId'});
+    const response = await this.walletConnectProvider.request<string>({method: 'eth_chainId'});
 
     let chainId = configToUse.chains[0].toString();
     if (configToUse.chains.length > 1) {
@@ -93,12 +68,12 @@ class WalletConnectModule implements Web3WModule {
   }
 
   logout(): Promise<void> {
-    // return this.walletConnectProvider.close();
+    this.walletConnectProvider?.disconnect();
     return Promise.resolve();
   }
 
   disconnect(): void {
-    this.walletConnectProvider.close(); // TODO here (instead of logout) ?
+    this.walletConnectProvider?.disconnect();
     this.walletConnectProvider = undefined;
 
     // TODO remove

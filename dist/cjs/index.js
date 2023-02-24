@@ -66,11 +66,13 @@ class WalletConnectModule {
         });
     }
     logout() {
-        // return this.walletConnectProvider.close();
+        var _a;
+        (_a = this.walletConnectProvider) === null || _a === void 0 ? void 0 : _a.disconnect();
         return Promise.resolve();
     }
     disconnect() {
-        this.walletConnectProvider.close(); // TODO here (instead of logout) ?
+        var _a;
+        (_a = this.walletConnectProvider) === null || _a === void 0 ? void 0 : _a.disconnect();
         this.walletConnectProvider = undefined;
         // TODO remove
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,6 +1,6 @@
 {
   "name": "web3w-walletconnect-loader",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Wallet Connect module loader for web3w",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -29,6 +29,10 @@
     "@types/node": "^15.3.0",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",
+    "@wagmi/chains": "^0.2.9",
+    "@wagmi/core": "^0.9.7",
+    "@walletconnect/ethereum-provider": "^2.4.6",
+    "@web3modal/ethereum": "^2.1.1",
     "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
