@@ -50,6 +50,7 @@ class WalletConnectModule {
                 chains: configToUse.chains,
             };
             this.walletConnectProvider = yield WalletConnectProvider.init(walletConnectConfig);
+            yield this.walletConnectProvider.enable();
             const response = yield this.walletConnectProvider.request({ method: 'eth_chainId' });
             let chainId = configToUse.chains[0].toString();
             if (configToUse.chains.length > 1) {
